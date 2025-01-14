@@ -31,7 +31,7 @@ class CameraNode(Node):
       namespace = '',
       parameters = [
         ('image_topic', 'image_color'),
-        ('image_queue', 1),
+        ('image_queue', 10),
         ('info_topic', 'camera_info'),
         ('info_queue', 1),
         ('show_image', True),
