@@ -47,13 +47,13 @@ class CameraNode(Node):
     
     self._img_msg = Image()
     self._img_msg.header.frame_id = self.get_parameter('frame_id').value
-    self._img_compressed_msg = CompressedImage()
-    self._img_compressed_msg.header.frame_id = self.get_parameter('frame_id').value
+    # self._img_compressed_msg = CompressedImage()
+    # self._img_compressed_msg.header.frame_id = self.get_parameter('frame_id').value
     self._info_msg = CameraInfo()
     self._info_msg.header.frame_id = self.get_parameter('frame_id').value
 
     self._pub_image = self.create_publisher(Image, self.get_name() + "/" + self.get_parameter('image_topic').value, self.get_parameter('image_queue').value)
-    self._pub_image_compressed = self.create_publisher(CompressedImage, self.get_name() + "/" +self.get_parameter('image_topic').value + "_compressed", self.get_parameter('image_queue').value)
+    # self._pub_image_compressed = self.create_publisher(CompressedImage, self.get_name() + "/" +self.get_parameter('image_topic').value + "_compressed", self.get_parameter('image_queue').value)
     self._pub_info = self.create_publisher(CameraInfo, self.get_name() + "/" + self.get_parameter('info_topic').value, self.get_parameter('image_queue').value)
     img_timer_period = 1.0 / self.get_parameter('frames_hz').value
     self._img_timer = self.create_timer(img_timer_period, self._img_timer_callback)
@@ -74,7 +74,7 @@ class CameraNode(Node):
         cv2.imshow(self.get_name(), framedump.pixels)
         cv2.waitKey(1)
       self._pub_image.publish(framedump.fill_img_msg(self._img_msg))
-      self._pub_image_compressed.publish(framedump.fill_jpeg_msg(self._img_compressed_msg))
+      # self._pub_image_compressed.publish(framedump.fill_jpeg_msg(self._img_compressed_msg))
       self._pub_info.publish(framedump.fill_info_msg(self._info_msg))
 
   def _rgb_callback(self, request, response):
