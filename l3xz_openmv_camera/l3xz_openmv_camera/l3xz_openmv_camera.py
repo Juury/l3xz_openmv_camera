@@ -20,7 +20,7 @@ from sensor_msgs.msg import Image
 from sensor_msgs.msg import CompressedImage 
 from sensor_msgs.msg import CameraInfo 
 
-from l3xz_openmv_camera_interfaces.srv import Rgb, Ir, Gpio, GpioSet
+# from l3xz_openmv_camera_interfaces.srv import Rgb, Ir, Gpio, GpioSet
 from camera_interface import OpenMvInterface
 
 class CameraNode(Node):
@@ -58,14 +58,14 @@ class CameraNode(Node):
     img_timer_period = 1.0 / self.get_parameter('frames_hz').value
     self._img_timer = self.create_timer(img_timer_period, self._img_timer_callback)
 
-    self._srv_rgb = self.create_service(Rgb, self.get_name() + '/rgb', self._rgb_callback)
-    self._srv_ir = self.create_service(Ir, self.get_name() + '/ir', self._ir_callback)
-
-    self._pub_inputs = []
-    self._srv_gpio = self.create_service(Gpio, self.get_name() + '/gpio_config', self._gpio_callback)
-    self._srv_gpio_set = self.create_service(GpioSet, self.get_name() + '/gpio_set', self._gpio_set_callback)
-    gpio_timer_period = 1.0 / self.get_parameter('gpio_hz').value
-    self._gpio_timer = self.create_timer(gpio_timer_period, self._gpio_timer_callback)
+    # self._srv_rgb = self.create_service(Rgb, self.get_name() + '/rgb', self._rgb_callback)
+    # self._srv_ir = self.create_service(Ir, self.get_name() + '/ir', self._ir_callback)
+    #
+    # self._pub_inputs = []
+    # self._srv_gpio = self.create_service(Gpio, self.get_name() + '/gpio_config', self._gpio_callback)
+    # self._srv_gpio_set = self.create_service(GpioSet, self.get_name() + '/gpio_set', self._gpio_set_callback)
+    # gpio_timer_period = 1.0 / self.get_parameter('gpio_hz').value
+    # self._gpio_timer = self.create_timer(gpio_timer_period, self._gpio_timer_callback)
 
   def _img_timer_callback(self):
     framedump = self._cam.dump()
@@ -77,33 +77,33 @@ class CameraNode(Node):
       # self._pub_image_compressed.publish(framedump.fill_jpeg_msg(self._img_compressed_msg))
       self._pub_info.publish(framedump.fill_info_msg(self._info_msg))
 
-  def _rgb_callback(self, request, response):
-    response.success = self._cam.rgb_led(request.r, request.g, request.b)
-    return response
+  # def _rgb_callback(self, request, response):
+  #   response.success = self._cam.rgb_led(request.r, request.g, request.b)
+  #   return response
+  #
+  # def _ir_callback(self, request, response):
+  #   response.success = self._cam.ir_led(request.on)
+  #   return response
+  #
+  # def _gpio_callback(self, request, response):
+  #   response.success = self._cam.gpio_config(request.nr, request.output, request.opendrain, request.pullup, request.pulldown)
+  #   if response.success:
+  #     self._pub_inputs.append([request.nr, self.create_publisher(Bool, self.get_name() + "/input_" + str(request.nr), 1)])
+  #   return response
 
-  def _ir_callback(self, request, response):
-    response.success = self._cam.ir_led(request.on)
-    return response
-
-  def _gpio_callback(self, request, response):
-    response.success = self._cam.gpio_config(request.nr, request.output, request.opendrain, request.pullup, request.pulldown)
-    if response.success:
-      self._pub_inputs.append([request.nr, self.create_publisher(Bool, self.get_name() + "/input_" + str(request.nr), 1)]) 
-    return response
-
-  def _gpio_set_callback(self, request, response):
-   response.success = self._cam.gpio_set(request.nr, request.on)
-   return response
-
-  def _gpio_timer_callback(self):
-    self._cam.gpio_poll_inputs()
-    for gpio_input in self._cam.inputs:
-      for pub in self._pub_inputs:
-        if pub[0] == gpio_input[0]:
-          msg = Bool()
-          msg.data = bool(gpio_input[1])
-          pub[1].publish(msg)
-          break
+  # def _gpio_set_callback(self, request, response):
+  #  response.success = self._cam.gpio_set(request.nr, request.on)
+  #  return response
+  #
+  # def _gpio_timer_callback(self):
+  #   self._cam.gpio_poll_inputs()
+  #   for gpio_input in self._cam.inputs:
+  #     for pub in self._pub_inputs:
+  #       if pub[0] == gpio_input[0]:
+  #         msg = Bool()
+  #         msg.data = bool(gpio_input[1])
+  #         pub[1].publish(msg)
+  #         break
 
 def main(args=None):
   rclpy.init(args=args)
